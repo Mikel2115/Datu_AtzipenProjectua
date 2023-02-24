@@ -2,6 +2,7 @@ package dambi.accessingmongoumeak.controller;
 
 import java.util.Date;
 
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +34,37 @@ public class MainController {
 		// This returns a JSON or XML with the users
 		return bestsellerRepository.findAll();
 	}
+
+    @GetMapping("/BestSellerId/{id}")
+    public @ResponseBody Bestseller getBestSellerId(@PathVariable int id){
+        return bestsellerRepository.findById(id);
+    }
+
+    @GetMapping("/BestSellerRango/{rango}")
+    public @ResponseBody Bestseller getBestSellerRango(@PathVariable int rango){ 
+         return bestsellerRepository.findByRango(rango);
+    }
+
+    @GetMapping("BestSellerPubli/{publi}")
+    public @ResponseBody Iterable<Bestseller> getBestSellerPublicador(@PathVariable String publi){
+        return bestsellerRepository.findByPublicador(publi);
+    }
+
+    @PutMapping("updateRangoBestSeller")
+    public @ResponseBody Bestseller updateRango(@Valid int id, int rango, int ventas){
+        try{
+            Bestseller bestseller = new Bestseller();
+            bestseller = bestsellerRepository.findById(id);
+            bestseller.setRango(rango);
+            bestseller.setVentas(ventas);
+            
+            bestsellerRepository.updateRango(bestseller);
+            return bestseller;
+
+        }catch (Exception ex){
+            return null;
+        }
+    }
 
 	@PostMapping(path = "/addBestSeller") // Map ONLY POST Requests
 	public @ResponseBody String addBestSeller(@RequestParam int id, @RequestParam int rango, @RequestParam String titulo, @RequestParam int ventas, 
